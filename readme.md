@@ -55,6 +55,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 3. Migrace databáze
+
 Inicializujte schéma SQLite databáze:
 
 ```bash
