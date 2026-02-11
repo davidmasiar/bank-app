@@ -1,6 +1,6 @@
 # 🏦 Bank Application Portfolio Management
 
-Nástroj pro správu a strategickou analýzu bankovního aplikačního portfolia postavený na frameworku Django. Aplikace integruje LLM (Large Language Models) pro pokročilé vyhodnocování technologického dluhu, analýzu rizik a automatizovanou vizualizaci integrací.
+Nástroj pro správu a strategickou analýzu bankovního aplikačního portfolia postavený na frameworku Django. Aplikace integruje LLM pro vyhodnocování technologického dluhu, analýzu rizik a automatizovanou vizualizaci integrací.
 
 ## 🏗️ Architektura a rozhodnutí
 
