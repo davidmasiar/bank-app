@@ -31,10 +31,10 @@ Volitelně můžete v portfolio/utils.py specifikovat LLM model, nyní nastaven�
 Postupujte podle těchto kroků pro zprovoznění aplikace na lokálním stroji:
 1. Klonování a virtuální prostředí
 ```bash
-git clone https://github.com/davidmasiar/bank_app
+git clone https://github.com/davidmasiar/bank-app.git
 ```
 ```bash
-cd bank_app
+cd bank-app
 ```
 Vytvoření a aktivace prostředí
 ```bash
