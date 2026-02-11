@@ -23,7 +23,7 @@ Aplikace vyžaduje přístup k OpenAI API. Pro zabezpečení citlivých údajů 
 2. Přidejte své klíče ve tvaru
 
 ```bash
-openai="klíč"
+OPENAI_API_KEY="klíč"
 ```
 Volitelně můžete v portfolio/utils.py specifikovat LLM model, nyní nastavený model=gpt-4o-mini
 
