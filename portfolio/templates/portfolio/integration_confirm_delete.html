@@ -1,0 +1,31 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-20 max-w-xl text-center">
+    <div class="bg-red-50 text-red-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+    </div>
+
+    <h1 class="text-3xl font-black italic uppercase tracking-tighter text-black mb-4">
+        Smazat integraci?
+    </h1>
+    
+    <p class="text-gray-500 mb-10 leading-relaxed">
+        Opravdu chcete odstranit vazbu mezi <br>
+        <strong class="text-black">{{ integration.source.name }}</strong> a <strong class="text-black">{{ integration.target.name }}</strong>? <br>
+        <span class="text-xs uppercase font-bold tracking-widest text-red-500 mt-2 block">Tuto akci nelze vzít zpět.</span>
+    </p>
+
+    <form method="POST" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-red-600 transition-all shadow-lg active:scale-95">
+            Ano, smazat vazbu
+        </button>
+        <a href="{% url 'integration_list' %}" class="bg-gray-100 text-gray-500 px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-gray-200 transition-all">
+            Zrušit a vrátit se
+        </a>
+    </form>
+</div>
+{% endblock %}

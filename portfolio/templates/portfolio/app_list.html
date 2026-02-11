@@ -1,0 +1,96 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10 max-w-6xl">
+    
+    <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-4xl font-black italic uppercase tracking-tighter text-black">
+                Portfolio <span class="text-gray-400">Aplikací</span>
+            </h1>
+            <p class="text-gray-500 font-medium">Správa a monitoring bankovních systémů Raiffeisenbank.</p>
+        </div>
+        <span class="bg-black text-[#ffee00] px-4 py-2 rounded-2xl text-xs font-black tracking-widest shadow-lg">
+            CELKEM: {{ apps|length }}
+        </span>
+    </div>
+
+    <div class="mb-12 bg-gray-50 p-6 rounded-[2.5rem] border border-gray-100 shadow-inner">
+        <form method="GET" action="{% url 'app_list' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            
+            <div class="md:col-span-1">
+                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Hledat aplikaci, technologii..." 
+                       class="w-full bg-white border-none rounded-2xl px-5 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-[#ffee00] transition-all">
+            </div>
+
+            <select name="domain" class="bg-white border-none rounded-2xl px-4 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-[#ffee00]">
+                <option value="">Všechny domény</option>
+                {% for d in domains %}
+                    <option value="{{ d }}" {% if request.GET.domain == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="criticality" class="bg-white border-none rounded-2xl px-4 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-[#ffee00]">
+                <option value="">Libovolná kritičnost</option>
+                {% for c in criticalities %}
+                    <option value="{{ c }}" {% if request.GET.criticality == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 bg-black text-[#ffee00] font-black uppercase text-[10px] tracking-widest rounded-2xl hover:scale-105 transition-all active:scale-95">
+                    Filtrovat
+                </button>
+                <a href="{% url 'app_list' %}" class="px-4 py-3 bg-white text-gray-400 rounded-2xl shadow-sm hover:text-black transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for app in apps %}
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all group flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 px-2 py-1 rounded">
+                            {{ app.domain }}
+                        </span>
+                        {% if app.criticality == 'High' %}
+                            <span class="flex h-2 w-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+                        {% endif %}
+                    </div>
+                    
+                    <h2 class="text-2xl font-black italic uppercase text-black mb-3 group-hover:text-yellow-600 transition-colors">
+                        {{ app.name }}
+                    </h2>
+                    
+                    <div class="text-[10px] text-gray-300 font-bold uppercase mb-4">{{ app.region }} | {{ app.hosting }}</div>
+
+                    {% if app.tech_debt and app.tech_debt.strip and app.tech_debt != "None" %}
+                    <div class="space-y-2 mb-8">
+                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Technický dluh</p>
+                        <p class="text-gray-700 font-medium line-clamp-2 italic text-sm">
+                            {{ app.tech_debt }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'app_detail' app.pk %}" class="flex items-center justify-between w-full bg-gray-50 group-hover:bg-black group-hover:text-[#ffee00] p-4 rounded-2xl transition-all font-black uppercase text-[10px] tracking-widest mt-4">
+                    Detailní analýza
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+        {% empty %}
+            <div class="col-span-full text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100">
+                <p class="text-gray-400 italic">Podle vybraných filtrů nebyly nalezeny žádné aplikace.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+<style>
+    /* Základní komponenty Raiffeisen stylu */
+    .rb-card { @apply bg-white p-6 rounded-2xl shadow-sm border border-gray-100; }
+    .rb-heading { @apply text-3xl font-black italic uppercase mb-4 border-b-4 border-[#fee600] pb-2; }
+    .rb-label { @apply text-gray-400 text-[10px] uppercase font-bold tracking-widest; }
+    .rb-value { @apply font-bold text-black; }
+    
+    /* Dynamické barvy pro technologický dluh */
+    .debt-box { @apply p-6 rounded-2xl shadow-lg border-l-8 transition-colors duration-300; }
+    
+    .debt-critical { @apply bg-black text-white border-red-600; }
+    .debt-critical .debt-title { @apply text-red-500; }
+    
+    .debt-medium { @apply bg-gray-900 text-white border-yellow-500; }
+    .debt-medium .debt-title { @apply text-yellow-500; }
+    
+    .debt-minor { @apply bg-gray-900 text-white border-green-500; }
+    .debt-minor .debt-title { @apply text-green-500; }
+    
+    .debt-none { @apply bg-gray-50 text-gray-600 border-gray-200; }
+</style>

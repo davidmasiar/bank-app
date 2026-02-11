@@ -1,0 +1,71 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<main class="container mx-auto py-10 px-4">
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-[#ffee00] transition-transform hover:scale-105">
+            <p class="text-gray-400 uppercase font-black text-[10px] tracking-widest mb-1">Celkem aplikací v portfoliu</p>
+            <p class="text-6xl font-black text-black">{{ total_apps }}</p>
+        </div>
+        
+        <div class="bg-black text-white p-8 rounded-3xl shadow-xl transition-transform hover:scale-105">
+            <p class="text-gray-500 uppercase font-black text-[10px] tracking-widest mb-1">Aktivní integrace</p>
+            <p class="text-6xl font-black text-[#ffee00]">{{ total_integrations }}</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        
+        <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-50">
+            <h3 class="text-xl font-black italic uppercase mb-6 border-l-8 border-black pl-4">Rozložení kritičnosti</h3>
+            <div class="space-y-6">
+                {% for stat in criticality_stats %}
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-sm uppercase tracking-tighter">{{ stat.criticality }}</span>
+                        <span class="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-500">{{ stat.count }}</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-3">
+                        <div class="bg-black h-3 rounded-full transition-all duration-1000" 
+                             style="width: {% widthratio stat.count total_apps 100 %}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-50">
+            <h3 class="text-xl font-black italic uppercase mb-6 border-l-8 border-[#ffee00] pl-4">Aplikace dle domén</h3>
+            <div class="space-y-4">
+                {% for stat in domain_stats %}
+                <div class="flex items-center group">
+                    <span class="w-32 text-xs font-black uppercase text-gray-400 truncate">{{ stat.domain }}</span>
+                    <div class="flex-1 ml-4 bg-gray-50 rounded-xl h-10 relative overflow-hidden border border-gray-100">
+                        <div class="bg-[#ffee00] h-10 rounded-xl transition-all group-hover:bg-yellow-400" 
+                             style="width: {% widthratio stat.count total_apps 100 %}%"></div>
+                        <span class="absolute inset-y-0 left-3 flex items-center text-xs font-black italic">{{ stat.count }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <div class="mt-12 bg-black p-10 rounded-[3rem] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+            <h3 class="text-white text-2xl font-black italic uppercase">Potřebujete hlubší vhled?</h3>
+            <p class="text-gray-400">Spusťte nástroje založené na LLM.</p>
+        </div>
+        <div class="flex flex-wrap gap-4">
+            <a href="{% url 'analysis' %}" class="bg-[#ffee00] hover:bg-white text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-lg">
+                Strategická Analýza
+            </a>
+            <a href="{% url 'qa_view' %}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all">
+                Položit dotaz AI
+            </a>
+        </div>
+    </div>
+
+</main>
+{% endblock %}

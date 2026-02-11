@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'portfolio/favicon.jpg' %}">
+    
+    <title>{% block title %}RB Portfolio Management{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <link rel="stylesheet" href="{% static 'portfolio/style.css' %}">
+
+    <style type="text/tailwindcss">
+        @layer components {
+            .rb-card { @apply bg-white p-6 rounded-2xl shadow-sm border border-gray-100; }
+            .rb-heading { @apply text-3xl font-black italic uppercase mb-4 border-b-4 border-[#fee600] pb-2; }
+            .rb-label { @apply text-gray-400 text-[10px] uppercase font-bold tracking-widest; }
+            .rb-value { @apply font-bold text-black; }
+            
+            .debt-box { @apply p-6 rounded-2xl shadow-lg border-l-8 transition-all duration-300; }
+            
+            .debt-critical { @apply bg-black text-white border-red-600; }
+            .debt-critical .debt-title { @apply text-red-500; }
+            
+            .debt-medium { @apply bg-gray-900 text-white border-yellow-500; }
+            .debt-medium .debt-title { @apply text-yellow-500; }
+            
+            .debt-minor { @apply bg-gray-900 text-white border-green-500; }
+            .debt-minor .debt-title { @apply text-green-500; }
+            
+            .debt-none { @apply bg-gray-50 text-gray-600 border-gray-200; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+    <nav class="bg-[#fee600] shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 group">
+                <img src="{% static 'portfolio/logo.png' %}" 
+                     alt="Raiffeisenbank" 
+                     style="height: 40px; width: auto;"
+                     class="transition-transform group-hover:scale-105">
+            </a>
+
+            <div class="flex gap-4 md:gap-8 items-center">
+                <a href="{% url 'app_list' %}" class="text-[11px] md:text-sm font-black uppercase tracking-widest text-black hover:opacity-60 transition-opacity">
+                    Aplikace
+                </a>
+                
+                <a href="{% url 'integration_list' %}" class="text-[11px] md:text-sm font-black uppercase tracking-widest text-black hover:opacity-60 transition-opacity">
+                    Integrace
+                </a>
+
+                <a href="{% url 'analysis' %}" class="text-[11px] md:text-sm font-black uppercase tracking-widest text-black hover:opacity-60 transition-opacity">
+                    Analýza
+                </a>
+                
+                <a href="{% url 'qa_view' %}" class="bg-black text-[#fee600] px-4 md:px-6 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all shadow-md active:scale-95">
+                    Dotaz AI
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="min-h-screen">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+<footer class="bg-black text-white py-10 mt-20">
+    <div class="container mx-auto px-6 text-center">
+        <p class="text-gray-500 text-[10px] uppercase font-black tracking-[0.2em]">
+            &copy; {% now "Y" %} David Mäsiar | AI Portfolio Platform
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

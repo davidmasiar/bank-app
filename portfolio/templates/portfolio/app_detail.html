@@ -1,0 +1,224 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-white">
+    <div class="container mx-auto px-4 py-10 max-w-7xl">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div>
+                <a href="{% url 'app_list' %}" class="group flex items-center gap-2 font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:text-black transition-all mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Zpět do portfolia
+                </a>
+                <div class="flex items-center gap-4">
+                    <h1 class="text-6xl font-black italic uppercase tracking-tighter text-black leading-none">
+                        {{ app.name }}
+                    </h1>
+                    {% if app.is_core %}
+                        <span class="bg-[#fee600] text-black px-3 py-1 text-[10px] font-black uppercase rounded shadow-sm">CORE</span>
+                    {% endif %}
+                </div>
+                <div class="h-3 w-32 bg-[#fee600] mt-4 shadow-sm"></div>
+            </div>
+
+            <div class="flex flex-col items-end">
+                <span class="bg-black text-[#fee600] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 shadow-lg">
+                    Kritičnost: {{ app.criticality }}
+                </span>
+                <div class="flex gap-4">
+                    <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest">ID: APP-{{ app.pk|stringformat:"04d" }}</span>
+                    <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest">Region: {{ app.region }}</span>
+                </div>
+            </div>
+        </div>
+
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20">
+            
+            <div class="lg:col-span-4 space-y-6">
+                
+                <section class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
+                    <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-6 border-b border-gray-50 pb-4">Základní parametry</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-1">Status</span>
+                            <span class="text-sm font-bold uppercase">{{ app.lifecycle_status }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-1">Doména</span>
+                            <span class="text-sm font-bold uppercase">{{ app.domain }}</span>
+                        </div>
+                        <div class="flex flex-col col-span-2 mt-2">
+                            <span class="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-1">Business Owner</span>
+                            <span class="text-sm font-bold text-gray-800">{{ app.business_owner }}</span>
+                        </div>
+                        <div class="flex flex-col col-span-2">
+                            <span class="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-1">IT Owner</span>
+                            <span class="text-sm font-bold text-gray-800">{{ app.it_owner }}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100">
+                    <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-6 border-b border-gray-50 pb-4">Infrastruktura</h2>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-4">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black text-gray-400 uppercase">Vendor</span>
+                            <span class="text-xs font-black truncate">{{ app.vendor }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black text-gray-400 uppercase">Hosting</span>
+                            <span class="text-xs font-black">{{ app.hosting }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black text-gray-400 uppercase">Runtime</span>
+                            <span class="text-xs font-black">{{ app.runtime }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black text-gray-400 uppercase">Databáze</span>
+                            <span class="text-xs font-black">{{ app.database }}</span>
+                        </div>
+                        <div class="flex flex-col col-span-2 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-[9px] font-black text-gray-400 uppercase">Tech Stack</span>
+                            <code class="text-[11px] font-black text-black mt-1">{{ app.tech_stack }}</code>
+                        </div>
+                        <div class="flex flex-col col-span-2 border-t pt-2">
+                            <span class="text-[9px] font-black text-gray-400 uppercase">Prostředí</span>
+                            <span class="text-[10px] font-bold text-gray-500 uppercase italic">{{ app.environments }}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="p-8 rounded-[2.5rem] shadow-2xl transition-all hover:scale-[1.02] 
+                    {% if 'Critical' in app.tech_debt or 'High' in app.tech_debt %} bg-red-600 text-white
+                    {% elif 'Medium' in app.tech_debt %} bg-orange-500 text-white
+                    {% else %} bg-[#fee600] text-black {% endif %}">
+                    <div class="flex items-center gap-3 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <h3 class="font-black text-sm uppercase tracking-widest">Technický dluh</h3>
+                    </div>
+                    <p class="text-lg font-bold italic leading-tight">{{ app.tech_debt|default:"Systém je v optimální kondici." }}</p>
+                </section>
+            </div>
+
+            <div class="lg:col-span-8 space-y-8">
+                
+                <div class="bg-white rounded-[3rem] shadow-2xl border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="bg-black px-10 py-6 flex justify-between items-center">
+                        <h3 class="text-[#fee600] text-2xl font-black italic uppercase tracking-tighter">Integrační okolí</h3>
+                        <div class="flex items-center gap-4">
+                            <button id="fullscreen-btn" onclick="toggleFullscreen()" class="hidden p-4 bg-gray-900 text-[#fee600] hover:bg-white hover:text-black rounded-2xl transition-all shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                </svg>
+                            </button>
+                            <button hx-get="{% url 'generate_mermaid' app.pk %}" 
+                                    hx-target="#mermaid-container" 
+                                    hx-indicator="#loading-spinner"
+                                    class="bg-[#fee600] text-black hover:bg-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-xl active:scale-95">
+                                Generovat diagram
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="relative bg-gray-50 flex items-center justify-center p-10 min-h-[450px]">
+                        <div id="loading-spinner" class="htmx-indicator hidden absolute inset-0 z-20 bg-white/90 flex flex-col items-center justify-center backdrop-blur-sm">
+                            <div class="animate-spin rounded-full h-20 w-20 border-8 border-gray-100 border-t-[#fee600] mb-6"></div>
+                            <span class="text-xs font-black uppercase tracking-[0.3em] text-black animate-pulse">AI mapuje vazby systému...</span>
+                        </div>
+
+                        <div id="mermaid-container" class="w-full flex items-center justify-center overflow-auto">
+                            <div class="text-center initial-placeholder">
+                                <p class="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Připraveno k vizualizaci</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+                    <div class="px-8 py-4 bg-gray-50 border-b flex justify-between items-center">
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-black">Detailní seznam integrací</h3>
+                        <span class="text-[10px] font-bold text-gray-400">Počet vazeb: {{ integrations|length }}</span>
+                    </div>
+                    
+                    <div class="max-h-[500px] overflow-y-auto custom-scrollbar bg-white">
+                        <table class="w-full text-left">
+                            <thead class="sticky top-0 bg-gray-50 shadow-sm z-10">
+                                <tr class="text-[9px] uppercase font-black text-gray-400 tracking-widest">
+                                    <th class="px-8 py-4">Systém</th>
+                                    <th class="py-4">Typ / Směr</th>
+                                    <th class="py-4">Volume</th>
+                                    <th class="px-8 py-4 text-right">Data</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                {% for i in integrations %}
+                                <tr class="text-xs hover:bg-gray-50 transition-colors">
+                                    <td class="px-8 py-4 font-bold text-black">
+                                        {% if i.source == app %}{{ i.target.name }}{% else %}{{ i.source.name }}{% endif %}
+                                    </td>
+                                    <td class="py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-1.5 py-0.5 rounded-[4px] text-[8px] font-black {% if i.direction == 'Inbound' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                                                {{ i.direction|upper|slice:":2" }}
+                                            </span>
+                                            <span class="text-gray-600 font-medium">{{ i.type }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 text-gray-400 font-mono text-[10px]">{{ i.volume }}</td>
+                                    <td class="px-8 py-4 text-right">
+                                        <span class="{% if i.data_sensitivity == 'GDPR' %}text-red-500 font-black{% else %}text-gray-400{% endif %} text-[9px]">
+                                            {{ i.data_sensitivity }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f9f9f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #000; border-radius: 20px; }
+    
+    .mermaid { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+    .mermaid svg { 
+        width: 100% !important; 
+        height: auto !important; 
+        filter: drop-shadow(0 15px 25px rgba(0,0,0,0.05));
+    }
+    .htmx-indicator.htmx-request { display: flex !important; }
+</style>
+
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral', flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' } });
+
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === "mermaid-container") {
+            const graphDiv = evt.detail.target.querySelector('.mermaid');
+            if (graphDiv) {
+                graphDiv.removeAttribute('data-processed');
+                mermaid.run({ nodes: [graphDiv] }).then(() => {
+                    document.getElementById('fullscreen-btn').classList.remove('hidden');
+                });
+            }
+        }
+    });
+
+    window.toggleFullscreen = function() {
+        const container = document.getElementById("mermaid-container");
+        if (!document.fullscreenElement) container.requestFullscreen();
+        else document.exitFullscreen();
+    }
+</script>
+{% endblock %}

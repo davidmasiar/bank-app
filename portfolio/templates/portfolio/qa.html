@@ -1,0 +1,159 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 min-h-[calc(100vh-80px)] flex flex-col">
+    
+    <div class="pt-6 mb-4 no-print flex-none">
+        <div class="flex justify-between items-end mb-4">
+            <div>
+                <h1 class="text-3xl font-black uppercase tracking-tighter text-black leading-none">AI Analytik</h1>
+                <p class="text-gray-400 text-[10px] uppercase font-black tracking-[0.2em] mt-2">Enterprise Portfolio Intelligence</p>
+            </div>
+            <a href="{% url 'clear_chat' %}" class="text-[10px] font-bold uppercase tracking-widest text-red-400 hover:text-red-600 transition-all border-b border-red-100 hover:border-red-400 pb-1">
+                Smazat historii 🗑️
+            </a>
+        </div>
+
+        <div class="mb-2">
+            <p class="text-[9px] font-black uppercase text-gray-400 mb-3 ml-1 tracking-widest">Strategické analýzy k dispozici</p>
+            <div class="flex overflow-x-auto pb-4 gap-3 no-scrollbar">
+                <button onclick="setQuestion('Která aplikace je nejvíce protěžovaná z hlediska integrací?')" class="suggest-pill">📊 Top integrace</button>
+                <button onclick="setQuestion('Jaké jsou hlavní zdroje technologického dluhu v našem portfoliu? Navrhněte 3 nejrychlejší zásahy.')" class="suggest-pill">⚠️ Tech dluh & Zásahy</button>
+                <button onclick="setQuestion('Které aplikace zpracovávají citlivá GDPR data a přes jaký integrační kanál je posílají?')" class="suggest-pill">🔐 GDPR & Kanály</button>
+                <button onclick="setQuestion('Které vendor produkty jsou nejvíce rozšířené a kde vidíme příležitost pro konsolidaci?')" class="suggest-pill">🏢 Vendor Konsolidace</button>
+                <button onclick="setQuestion('Identifikujte kandidáty na vyřazení (decommission) do 12 měsíců – kritéria: nízká kritičnost, zastaralý runtime, malý integrační objem.')" class="suggest-pill">♻️ Decommission (12m)</button>
+                <button onclick="setQuestion('Jaké integrace mají největší denní objemy zpráv a které aplikace jsou na nich závislé?')" class="suggest-pill">📈 Message Volumes</button>
+                <button onclick="setQuestion('Které aplikace v retail doméně běží v PRODu na cloudu a mají střední kritičnost?')" class="suggest-pill">☁️ Retail Cloud</button>
+                <button onclick="setQuestion('Navrhněte prioritizaci modernizace: seřaďte aplikace podle počtu nejvíce souvisejících technologických dluhů.')" class="suggest-pill">🛠️ Prioritizace modernizace</button>
+                <button onclick="setQuestion('Chci implementovat krypto. Můžu to udělat přes naše aplikace?')" class="suggest-pill">🪙 Krypto Implementace</button>
+                <button onclick="setQuestion('Jaké aplikace umožňují naimplementovat platby pomocí krypto? Vypiš aplikace a capability.')" class="suggest-pill">💳 Krypto Platby</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-container" class="bg-white border border-gray-100 rounded-t-[2.5rem] p-6 flex-1 overflow-y-auto shadow-inner relative flex flex-col scroll-smooth min-h-[400px]">
+        <div id="chat-history" class="space-y-6">
+            {% for chat in chat_history %}
+                <div class="flex justify-end">
+                    <div class="bg-gray-50 border border-gray-100 text-gray-600 p-4 px-5 rounded-3xl rounded-tr-none max-w-[80%] shadow-sm">
+                        <p class="text-sm font-medium">{{ chat.user }}</p>
+                    </div>
+                </div>
+                <div class="flex justify-start">
+                    <div class="bg-[#ffee00] text-black p-5 rounded-3xl rounded-tl-none max-w-[85%] shadow-md">
+                        <p class="text-[9px] font-black uppercase mb-1 opacity-40">Analytik RB</p>
+                        <p class="text-sm font-semibold leading-relaxed">{{ chat.ai }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <div id="empty-state" class="flex flex-col items-center justify-center py-20 opacity-20">
+                    <span class="text-6xl mb-4">🤖</span>
+                    <p class="text-[10px] uppercase font-black tracking-[0.3em]">System Ready</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="ai-typing" class="htmx-indicator flex justify-start mt-6">
+            <div class="bg-[#ffee00] text-black p-4 rounded-2xl rounded-tl-none shadow-md flex items-center gap-3">
+                <span class="text-xs font-black uppercase tracking-widest animate-pulse">Analytik RB píše</span>
+                <div class="flex gap-1">
+                    <div class="w-1.5 h-1.5 bg-black rounded-full animate-bounce"></div>
+                    <div class="w-1.5 h-1.5 bg-black rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div class="w-1.5 h-1.5 bg-black rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white pb-4 pt-4 rounded-b-[2.5rem] border-t border-gray-50 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] flex-none">
+        <form id="qa-form" 
+              hx-post="{% url 'qa_view' %}" 
+              hx-target="#chat-history" 
+              hx-swap="beforeend" 
+              hx-indicator="#ai-typing"
+              hx-on::before-request="if(!document.getElementById('qa-input').value.trim()){ alert('Napište prosím dotaz!'); event.preventDefault(); return false; }"
+              hx-on::after-request="this.reset(); scrollChat();"
+              onsubmit="return showUserBubble()"
+              class="relative">
+            {% csrf_token %}
+            <input type="text" name="question" id="qa-input" autocomplete="off" required
+                   placeholder="Zeptejte se na cokoliv v portfoliu..." 
+                   class="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl p-6 pr-24 focus:border-[#ffee00] focus:bg-white focus:ring-0 transition-all outline-none text-base font-medium">
+            <button type="submit" class="absolute right-3 top-3 bottom-3 bg-black text-[#ffee00] px-8 rounded-xl font-black text-xs uppercase hover:scale-105 transition-all shadow-lg active:scale-95">
+                Odeslat
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Změněno: Povoleno scrollování na body */
+    body { overflow-y: auto; }
+    
+    .htmx-indicator { display: none; }
+    .htmx-request.htmx-indicator { display: flex !important; }
+    
+    .suggest-pill {
+        flex: 0 0 auto; background-color: #ffffff; border: 1.5px solid #f3f4f6; padding: 0.8rem 1.4rem;
+        border-radius: 9999px; font-size: 11px; font-weight: 800; color: #1f2937;
+        white-space: nowrap; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .suggest-pill:hover { background-color: #ffee00; border-color: #ffee00; color: black; transform: translateY(-3px); }
+    
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    #chat-container::-webkit-scrollbar { width: 4px; }
+    #chat-container::-webkit-scrollbar-thumb { background: #f3f4f6; border-radius: 10px; }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+</style>
+
+<script>
+    function showUserBubble() {
+        const input = document.getElementById('qa-input');
+        const history = document.getElementById('chat-history');
+        const emptyState = document.getElementById('empty-state');
+        if (input.value.trim() === "") return false;
+        if (emptyState) emptyState.remove();
+        const bubble = `<div id="latest-user-msg" class="flex justify-end animate-fade-in opacity-60 mb-2">
+            <div class="bg-gray-50 border border-gray-100 text-gray-600 p-4 px-5 rounded-3xl rounded-tr-none max-w-[80%] shadow-sm">
+                <p class="text-sm font-medium">${input.value}</p>
+            </div>
+        </div>`;
+        history.insertAdjacentHTML('beforeend', bubble);
+        scrollChat();
+        return true;
+    }
+
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+        if (evt.detail.target.id === "chat-history") {
+            const latest = document.getElementById('latest-user-msg');
+            if (latest) {
+                latest.classList.remove('opacity-60');
+                latest.removeAttribute('id'); 
+            }
+            scrollChat();
+        }
+    });
+
+    function scrollChat() {
+        const container = document.getElementById('chat-container');
+        if (container) {
+            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+        }
+    }
+
+    function setQuestion(text) {
+        const input = document.getElementById('qa-input');
+        if (input) {
+            input.value = text;
+            htmx.trigger('#qa-form', 'submit');
+        }
+    }
+    window.onload = scrollChat;
+</script>
+{% endblock %}

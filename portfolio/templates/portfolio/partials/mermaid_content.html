@@ -1,0 +1,11 @@
+<div class="mermaid-container w-full h-full flex flex-col items-center justify-center animate-fade-in">
+    <div class="mermaid">
+        {{ mermaid_code|safe }}
+    </div>
+</div>
+
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    // Inicializace konkrétního prvku
+    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+</script>
